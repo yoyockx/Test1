@@ -6,6 +6,7 @@ realm = "shared"
 
 [dependencies]
 ByteNet = "ffrostflame/bytenet@0.4.6"
+Promise = "cody-nelson/promise@4.0.1"
 
 
 [server-dependencies]

@@ -18,6 +18,9 @@
       },
       "Packages": {
         "$path": "ServerPackages"
+      },
+      "ServerModules": {
+        "$path": "src/ServerModules"
       }
     },
 
