@@ -2,23 +2,23 @@ local Genmodule = {}
 
 local RS = game:GetService("ReplicatedStorage")
 local Tiles = RS.Tiles:GetChildren()
-local Promise = require(RS.Packages.WaitForChild("Promise"))
+local Promise = require(RS.Packages:WaitForChild("Promise"))
 local StartRoom: Model = RS.StartingRoom
 
 local PossibleHallways = {}
 local TilesWeight = {}
 local totalWeight = 0
 
-for _, Hallway in Tiles do
+for _, Hallway in ipairs(Tiles) do
 	if Hallway:IsA("Model") and not Hallway:GetAttribute("Room") then
 		table.insert(PossibleHallways, Hallway)
 	end
 end
 
-for _, Tile in Tiles do
+for _, Tile in ipairs(Tiles) do
 	if Tile:IsA("Model") then
+		table.insert(TilesWeight, { Tile = Tile, Weight = Tile:GetAttribute("Weight") })
 		totalWeight += Tile:GetAttribute("Weight")
-		TilesWeight[Tile] = Tile:GetAttribute("Weight")
 	end
 end
 
@@ -70,10 +70,10 @@ function Genmodule.Genrate(Pos: Vector3, RoomNum: number, Seed: number)
 							local randomNumber = Rng:NextNumber() * totalWeight
 							local accumulatedWeight = 0
 							local ChoosenTile
-							for Tile, Weight in TilesWeight do
-								accumulatedWeight = accumulatedWeight + Weight
+							for _, t in ipairs(TilesWeight) do
+								accumulatedWeight += t.Weight
 								if randomNumber <= accumulatedWeight then
-									ChoosenTile = Tile
+									ChoosenTile = t.Tile
 									break
 								end
 							end
@@ -89,7 +89,7 @@ function Genmodule.Genrate(Pos: Vector3, RoomNum: number, Seed: number)
 						Waypoint:Destroy()
 						table.insert(
 							childPromises,
-							Promise.delay(0.01):andThen(function()
+							Promise.delay(0.001):andThen(function()
 								return Branchout(Clone)
 							end)
 						)
